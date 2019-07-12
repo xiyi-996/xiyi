@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="../web_back/js/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -29,8 +30,67 @@
             </form>
         </div>
 
-    </div> 
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">温馨提醒</h4>
+                </div>
+                <div class="modal-body">
+                  ...
+                </div>
+                <div class="modal-footer">
+                  <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+    <script src="./js/./jquery-1.12.4.min.js"></script>
+    <script src="./js/./bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $('.input_sub').on('click', function (e) {
+                console.log(2);
 
+                e.preventDefault();
+                var txt = $('.input_txt').val();
+                var pass = $('.input_pass').val();
+                if (txt == '' || pass == '') {
+                    // alert('温馨提示,填写不能为空');
+                    $('.modal-body').text('填写不能为空')
+                    $('#myModal').modal({
+                        keyboard: false
+                    })
+                }
+                $.ajax({
+                    type: 'post',
+                    url: 'http://localhost:8000/admin/login',
+                    data: ({
+                        user_name: txt,
+                        password: pass
+                    }),
+                    success: function (res) {
+                        if (res.code == 200) {
+
+                            location.href = './index.html';
+                        }
+                        else {
+                            // alert(res.code)
+                            $('.modal-body').text('账号或密码错误')
+                            $('#myModal').modal({
+                                keyboard: false
+                            })
+                        }
+
+                    }
+                })
+
+            })
+        })
+    </script>
 </body>
 
 </html>
