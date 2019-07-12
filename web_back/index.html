@@ -124,7 +124,13 @@
           })
         //   更改用户信息
           $.ajax({
-              
+              url:'http://localhost:8000/admin/getuser',
+              success:function(res){
+                  console.log(res);
+                $('.user_info').children('span').html(res.data.nickname);
+                $('.user_info').children('img').attr('src',res.data.user_pic);
+                $('.user_center_link').children('img').attr('src',res.data.user_pic);
+              }
           })
         
         })
