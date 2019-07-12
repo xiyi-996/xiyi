@@ -104,5 +104,32 @@
 
     </script>
 
+    <!-- 登录的操作 -->
+    <script>
+        $(function(){
+            $('.icon-tuichu').parent().on('click',function(){
+                $.ajax({
+                    type:'post',
+                    url:'http://localhost:8000/admin/logout',
+                    success:function(res){
+                        if(res.code==200){
+                            location.href='./login.html'
+                        }
+                        else{
+                            alert(res.code)
+                        }
+                        
+                    }   
+                })
+          })
+        //   更改用户信息
+          $.ajax({
+              
+          })
+        
+        })
+   
+    </script>
+
 </body>
 </html>
