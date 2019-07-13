@@ -24,38 +24,43 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="李思思">
+                        <input type="text" class="form-control username" value="李思思" name="username">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="思思">
+                        <input type="text" class="form-control  nickname" value="思思" name="nickname">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
+                    <label for="inputEmail3" class="col-sm-2 control-label ">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="lisisi@126.com">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
-                    <div class="col-sm-10">
-                        <img src="images/2.jpg" alt="" class="user_pic">
-                        <input type="file" id="exampleInputFile">
+                        <input type="text" class="form-control email" value="lisisi@126.com" name="email">
                     </div>
                 </div>
 
                 <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
-                        <div class="col-sm-4">
-                            <input type="password" class="form-control" id="inputEmail3" value="12345678">
-                        </div>
+                    <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
+                    <div class="col-sm-10">
+                        <img src="images/2.jpg" alt="" class="user_pic">
+                        <input type="file" id="exampleInputFile" name="user_pic" style="display: none">
+                        <!-- 美化图标 -->
+                        <br>
+                        <label for="exampleInputFile">
+                            <img src="./images/u=1749358633,3979291504&fm=26&gp=0.jpg" width="50px" alt="">
+                        </label>
                     </div>
-               
-    
+                </div>
+
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control password" value="12345678" name="password">
+                    </div>
+                </div>
+
+
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <button type="submit" class="btn btn-success">修改</button>
@@ -64,6 +69,83 @@
             </form>
         </div>
     </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">温馨提醒</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-primary">are you true</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $('#exampleInputFile').change(function () {
+                var url = URL.createObjectURL(this.files[0]);
+                $('.user_pic').attr('src', url)
+            })
+            $.ajax({
+                url: 'http://localhost:8000/admin/userinfo_get',
+                success: function (res) {
+                    for (var key in res.data) {
+                        $('.' + key).val(res.data[key]);
+                        $('.user_pic').attr('src', res.data.user_pic);
+                    }
+
+                }
+            })
+            $('.btn-success').on('click', function (e) {
+                e.preventDefault();
+                var fm = new FormData($('.article_form')[0])
+
+
+                $.ajax({
+                    type: 'post',
+                    url: 'http://localhost:8000/admin/userinfo_edit',
+                    data: fm,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        console.log(res);
+
+                        if (res.code == 200) {
+                            $('#myModal').modal();
+                            $('.modal-body').text('修改成功');
+                            $('.btn-primary').click(function () {
+                                $('#myModal').modal('hide')
+                               parent.location.reload();
+                                $.ajax({
+                                    url: 'http://localhost:8000/admin/getuser',
+                                    success: function (res) {
+
+                                       parent.$('.user_info').children('span').html( '欢迎&nbsp;&nbsp;'+res.data.nickname);
+                                       parent.$('.user_info').children('img').attr('src', res.data.user_pic);
+                                       parent.$('.user_center_link').children('img').attr('src', res.data.user_pic);
+                                    }
+                                })
+
+                            })
+
+                        }
+                        else {
+                            alert(res.code)
+                        }
+                    }
+                })
+            })
+
+        })
+    </script>
 
 </body>
 
