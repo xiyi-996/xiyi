@@ -116,23 +116,27 @@
                     contentType: false,
                     processData: false,
                     success: function (res) {
-                        console.log(res);
+                        
 
                         if (res.code == 200) {
                             $('#myModal').modal();
                             $('.modal-body').text('修改成功');
+
                             $('.btn-primary').click(function () {
-                                $('#myModal').modal('hide')
-                               parent.location.reload();
+                               console.log(2);
+                               
+                            //    parent.location.reload();
                                 $.ajax({
                                     url: 'http://localhost:8000/admin/getuser',
                                     success: function (res) {
-
+                                        console.log(res);
+                                        
                                        parent.$('.user_info').children('span').html( '欢迎&nbsp;&nbsp;'+res.data.nickname);
                                        parent.$('.user_info').children('img').attr('src', res.data.user_pic);
                                        parent.$('.user_center_link').children('img').attr('src', res.data.user_pic);
                                     }
                                 })
+                                $('#myModal').modal('hide')
 
                             })
 
