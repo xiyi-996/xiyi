@@ -294,11 +294,11 @@
             <td class="text-center">{{v.date}}</td>
             <td class="text-center">{{v.state}}</td>
             <td class="text-center">
-                <a href="article_edit.html" data-id="{{v.id}}">编辑</a>
-                <a href="#" class="btn btn-danger btn-xs" data-id="{{v.id}}">删除</a>
+                <a href="article_edit.html?id={{v.id}}"  class ="btn-edit">编辑</a>
+                <a href="#" class="btn btn-danger btn-xs btn-delete" data-id="{{v.id}}">删除</a>
             </td>
         </tr>
-
+       
     {{/each}}
     </script>
 
@@ -311,6 +311,17 @@
 
             }
         })
+
+        var mghas = 10
+        var $pagination = $('.pagination');
+        var defaultOpts = {
+            totalPages: mghas,
+            onPageClick: function (event, page) {           
+                getData(page);
+            }
+        };
+        $pagination.twbsPagination(defaultOpts);
+
         function getData(mga) {
             var a = $('#selCategory').val()
             var b = $('#selStatus').val()
@@ -323,9 +334,21 @@
                     perpage: 7
                 },
                 success: function (res) {
-                    console.log(res);
+                    
                     var html = template('t2', res)
                     $('tbody').html(html)
+
+                    var totalPages = res.totalPage;
+                    if (totalPages != mghas) {
+                        mghas = totalPages
+                        var currentPage = $pagination.twbsPagination('getCurrentPage');
+                        $pagination.twbsPagination('destroy');
+                        $pagination.twbsPagination($.extend({}, defaultOpts, {
+                            startPage: 1,
+                            totalPages: totalPages
+                        }));
+                    }
+
                 }
             })
         }
@@ -334,17 +357,27 @@
             e.preventDefault()
             getData(1)
         })
-        // 进入显示所有文章
-        $('#btnSearch').trigger('click')
+        
 
-        $('.pagination').twbsPagination({
-            totalPages: 25,
-            visiblePages: 7,
-            onPageClick: function (event, page) {
-                // $('#page-content').text('Page ' + page);
-                getData(page)
-            }
-        });
+        // 删除文章   
+        $('tbody').on('click', '.btn-delete', function (e) {
+            e.preventDefault();
+            var that = this
+            $.ajax({
+                url: 'http://localhost:8000/admin/article_delete',
+                data: { id: $(this).attr('data-id') },
+                success: function (res) {
+
+                    if (res.code == 200) {
+                        $(that).parents('tr').remove();
+                    }
+                }
+            })
+        })
+        $('.btn-sm').trigger('click')
+     
+
+
     </script>
 
 </body>

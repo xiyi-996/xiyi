@@ -27,20 +27,20 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字">
+                        <input type="email" class="form-control title" id="inputEmail3" value="文章标题文字" name="title">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
                         <img src="images/pic06.jpg" class="article_cover">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" id="exampleInputFile" class="cover" name="cover">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
+                        <select class="form-control type" name="type">
                             <option>类别一</option>
                             <option>类别二</option>
                             <option>类别三</option>
@@ -50,11 +50,11 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">发布时间：</label>
+                    <label for="inputEmail3" class="col-sm-2 control-label" >发布时间：</label>
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" value="2019-05-17" id="dateinput">
+                            <input type="text" class="form-control date" value="2019-05-17" id="dateinput" name="date">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -66,18 +66,70 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="rich_content" name="content" placeholder="文章内容" value="文章内容">
+                        <input type="text" class="form-control content" id="rich_content" name="content" placeholder="文章内容"
+                            value="文章内容">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
+                        <button type="submit" class="btn btn-success btn-edi">修改</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <script src="./js/template-web.js"></script>
+    <script type="text/html" id="t1">
+        {{each data v}}
+        <option value="{{v.id}}" >{{v.name}}</option>
+        {{/each}}
+        </script>
+    <script>
+         $.ajax({
+                url:'http://localhost:8000/admin/category_search ',
+                success:function(res){
+                    var html =template('t1',res);
+                    $('.form-control').html(html);
+                }
+            })
 
+        var id = location.search.split('=')[1];
+       
+        
+        $.get({
+            url: 'http://localhost:8000/admin/search',
+            data: { id: id },
+            success: function (res) {
+                for(var key in res.data){
+                  
+                    $('.'+key).val(res.data[key])
+                    $('.article_cover').attr('src',res.data.cover)
+                }
+               
+            }
+        })
+        
+        // 文章编辑
+       $('.btn-edi').on('click',function(e){
+        e.preventDefault();
+        var data=new FormData($('.article_form')[0])
+        $(this).serialize
+        data.append('id',id)
+        $.post({
+            url:'http://localhost:8000/admin/article_edit',
+            data:data,
+            contentType:false,
+            processData:false,
+            success:function(res){
+                console.log(2);
+                
+                console.log(res);
+                alert('编辑成功')
+                
+            }
+        })
+       })
+    </script>
 </body>
 
 </html>
