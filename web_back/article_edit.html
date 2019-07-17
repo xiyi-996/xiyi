@@ -34,7 +34,7 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
                         <img src="images/pic06.jpg" class="article_cover">
-                        <input type="file" id="exampleInputFile" class="cover" name="cover">
+                        <input type="file" id="exampleInputFile" name="cover">
                     </div>
                 </div>
                 <div class="form-group">
@@ -54,7 +54,7 @@
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control date" value="2019-05-17" id="dateinput" name="date">
+                            <input type="text" class="form-control date" value="2019-05-17" id="dateinput" name="date" disabled>
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -66,7 +66,7 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control content" id="rich_content" name="content" placeholder="文章内容"
+                        <input type="text" class="form-control content" id="rich_content" placeholder="文章内容"
                             value="文章内容">
                     </div>
                 </div>
@@ -85,6 +85,10 @@
         {{/each}}
         </script>
     <script>
+         $('#exampleInputFile').change(function () {
+                var url = URL.createObjectURL(this.files[0]);
+                $('.article_cover').attr('src', url)
+            })
          $.ajax({
                 url:'http://localhost:8000/admin/category_search ',
                 success:function(res){
@@ -100,10 +104,12 @@
             url: 'http://localhost:8000/admin/search',
             data: { id: id },
             success: function (res) {
+                console.log(res);
+                
+
+                $('.article_cover').attr('src',res.data.cover)
                 for(var key in res.data){
-                  
                     $('.'+key).val(res.data[key])
-                    $('.article_cover').attr('src',res.data.cover)
                 }
                
             }
@@ -113,7 +119,8 @@
        $('.btn-edi').on('click',function(e){
         e.preventDefault();
         var data=new FormData($('.article_form')[0])
-        $(this).serialize
+        data.append('content',tinyMCE.activeEditor.getContent())
+        
         data.append('id',id)
         $.post({
             url:'http://localhost:8000/admin/article_edit',
@@ -121,9 +128,7 @@
             contentType:false,
             processData:false,
             success:function(res){
-                console.log(2);
-                
-                console.log(res);
+              
                 alert('编辑成功')
                 
             }

@@ -320,6 +320,7 @@
                 getData(page);
             }
         };
+
         $pagination.twbsPagination(defaultOpts);
 
         function getData(mga) {
@@ -339,9 +340,11 @@
                     $('tbody').html(html)
 
                     var totalPages = res.totalPage;
+                    
+                   window.currentPage = $pagination.twbsPagination('getCurrentPage'); //获取当前页
                     if (totalPages != mghas) {
                         mghas = totalPages
-                        var currentPage = $pagination.twbsPagination('getCurrentPage');
+                       
                         $pagination.twbsPagination('destroy');
                         $pagination.twbsPagination($.extend({}, defaultOpts, {
                             startPage: 1,
@@ -352,9 +355,10 @@
                 }
             })
         }
-
+        // 筛选按钮
         $('#btnSearch').click(function (e) {
             e.preventDefault()
+            $('.first').trigger('click')
             getData(1)
         })
         
@@ -369,14 +373,13 @@
                 success: function (res) {
 
                     if (res.code == 200) {
-                        $(that).parents('tr').remove();
+                       getData(currentPage)
                     }
                 }
             })
         })
-        $('.btn-sm').trigger('click')
-     
-
+        // $('.btn-sm').trigger('click')
+       
 
     </script>
 

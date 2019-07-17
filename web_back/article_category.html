@@ -209,13 +209,7 @@
                     success: function (res) {
                         if (res.code == 200) {
                             getData()
-                            // var obj = {
-                            //     name: a, slug: b
-                            // }
-                            // var html = template('tpll', obj);
-                            // console.log(html);
-
-                            // $('tbody').append(html);
+                 
                         }
                     }
                 })
@@ -250,15 +244,11 @@
                     type:'post',
                     data:{id:$(this).attr('data-id')},
                     url:'http://localhost:8000/admin/category_delete',
-                   
                     success:function(res){
-                       
                         if(res.code==200){
                             if(confirm('确定删除吗')){
                                 $(that).parents('tr').remove();
                             }
-                            
-                           
                         }
                         else{
                             alert(res.code)
